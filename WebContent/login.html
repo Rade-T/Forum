@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+	var userNameInput = $('#userNameInput');
+	var passwordInput = $('#passwordInput');
+	var messageParagraph = $('#messageParagraph');
+
+	$('#userSubmit').on('click', function(event) {
+		userName = userNameInput.val();
+		password = passwordInput.val();
+		
+		var jsonUser = JSON.stringify({'userName': userName, 'password': password});
+
+		$.post('LoginServlet', {'user': jsonUser}, function(data) {
+			if (data.message) messageParagraph.text(data.message);
+			if (data.status == 'success' && data.redirect) {
+				userNameInput.val('');
+				passwordInput.val('');
+
+				window.location.replace(data.redirect);
+			}
+		});
+	
+		event.preventDefault();
+		return false;
+	});
+});
+</script>
+</head>
+<body>
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Login</h3>
+	  </div>
+	  <div class="panel-body">
+	  	<form>
+	  		<div class="input-group">
+		  		<div class="input-group">
+		  			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+			  		<input placeholder="Korisnicko ime" class="form-control" type="text" id="userNameInput"/>
+			  	</div>	
+			  	<div class="input-group">
+			  		<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+					<input placeholder="Lozinka" class="form-control" type="password" id="passwordInput"/>
+				</div>
+			</div>
+			<input class="btn btn-default" type="submit" value="Prijavi se" id="userSubmit">
+			<p id="messageParagraph"/>
+		</form>
+	  </div>
+	</div>
+</body>
+</html>
